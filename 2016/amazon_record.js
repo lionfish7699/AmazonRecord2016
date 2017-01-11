@@ -118,6 +118,7 @@
                 lnks.push(lnk);
             }
             else {
+                var orderNo =  jQuery(box.find('div.order-info span.a-color-secondary')[5]).text().trim();
                 var dateText = jQuery(box.find('div.order-info span.value')[0]).text().trim();
                 var items = [];
                 var item = {};
@@ -130,6 +131,7 @@
                     item['date'] = dateText;
                     item['author'] = $(pubarr[j * 2]).text().trim().replace(/(\n)/g, '').replace(/ +/g, ' ');
                     item['price'] = $(this).parent().parent().find("span.a-color-price").text().trim();
+                    item['orderno'] = orderNo;
                     items.push(item);
                 });
                 var priceText = jQuery(box.find('div.order-info span.value')[1]).text();
