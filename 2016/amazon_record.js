@@ -119,6 +119,7 @@
             }
             else {
                 var orderNo =  jQuery(box.find('div.order-info span.a-color-secondary')[5]).text().trim();
+                var totalPrice = jQuery(box.find('div.order-info span.a-color-secondary')[3]).text().trim();
                 var dateText = jQuery(box.find('div.order-info span.value')[0]).text().trim();
                 var items = [];
                 var item = {};
@@ -132,6 +133,10 @@
                     item['author'] = $(pubarr[j * 2]).text().trim().replace(/(\n)/g, '').replace(/ +/g, ' ');
                     item['price'] = $(this).parent().parent().find("span.a-color-price").text().trim();
                     item['orderno'] = orderNo;
+                    //電子書籍の場合、商品情報のところに金額がでていないので合計金額の部分を取ってくる
+                    if(!item['price']){
+                      item['price'] = totalPrice;
+                    }
                     items.push(item);
                 });
                 var priceText = jQuery(box.find('div.order-info span.value')[1]).text();
