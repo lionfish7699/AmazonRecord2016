@@ -21,8 +21,8 @@
         if (day.length <= 1)
             day = "0" + day;
         var date = "" + year + "/" + month + "/" + day;
-        var arr = [date, entry.name, entry.price, entry.url, entry.orderno];
-        return arr.join('\t') + "\n";
+        var arr = [date, entry.name, entry.price, entry.url, entry.orderno, entry.printurl];
+        return arr.join('#') + "\n";
     }
     function popup(content) {
         var generator = window.open('', 'name', 'height=250,width=700');
@@ -129,16 +129,20 @@
                     item['url'] = 'https://www.amazon.co.jp' + item['path'];
                     item['date'] = dateText;
                     item['author'] = $(pubarr[j * 2]).text().trim().replace(/(\n)/g, '').replace(/ +/g, ' ');
-                    item['orderno'] = orderNo;
-                    item['price'] = $(this).parent().parent().find("span.a-color-price").text().trim();
-                    var orderNo =  jQuery(box.find('div.order-info span.a-color-secondary')[7]).text().trim();  
-                    //var printUrl = 'https://www.amazon.co.jp/gp/css/summary/print.html/ref=oh_aui_pi_o01_?ie=UTF8&orderID=D01-3061368-4425015';
-                    if(!item['price']){
+                    var isDigital = $(this).parent().parent().find("span.a-color-price").text().trim().length > 0 ? false : true;
+                    var printUrl;
+                    if(isDigital){
                       item['price'] = totalPrice;
                       orderNo =  jQuery(box.find('div.order-info span.a-color-secondary')[5]).text().trim();
-                      //printUrl = 'https://www.amazon.co.jp/gp/digital/your-account/order-summary.html?ie=UTF8&orderID=D01-6363624-2079436&print=1&ref_=oh_aui_ajax_dpi&';
+                      printUrl = 'https://www.amazon.co.jp/gp/digital/your-account/order-summary.html?ie=UTF8&orderID=' + orderNo + '&print=1';
+                    }else{
+                      item['price'] = $(this).parent().parent().find("span.a-color-price").text().trim();
+                      orderNo =  jQuery(box.find('div.order-info span.a-color-secondary')[7]).text().trim();  
+                      printUrl = 'https://www.amazon.co.jp/gp/css/summary/print.html/ref=oh_aui_pi_o01_?ie=UTF8&orderID=' + orderNo;
                     }
                     item['orderno'] = orderNo;
+                    item['printurl'] = printUrl;
+
                     items.push(item);
                 });
                 var priceText = jQuery(box.find('div.order-info span.value')[1]).text();
