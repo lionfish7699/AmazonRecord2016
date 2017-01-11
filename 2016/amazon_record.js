@@ -12,7 +12,6 @@
     // 各注文履歴をTSVフォーマットにして返す
     var datePattern = new RegExp("(\\d{4})年(\\d{1,2})月(\\d{1,2})日");
     function formatEntry(entry) {
-        console.log(entry);
         entry.date.match(datePattern);
         var year = RegExp.$1;
         var month = RegExp.$2;
@@ -22,7 +21,7 @@
         if (day.length <= 1)
             day = "0" + day;
         var date = "" + year + "/" + month + "/" + day;
-        var arr = [date, entry.name, entry.price, entry.url];
+        var arr = [date, entry.name, entry.price, entry.url, entry.orderno];
         return arr.join('\t') + "\n";
     }
     function popup(content) {
@@ -118,7 +117,6 @@
                 lnks.push(lnk);
             }
             else {
-                var orderNo =  jQuery(box.find('div.order-info span.a-color-secondary')[5]).text().trim();
                 var totalPrice = jQuery(box.find('div.order-info span.a-color-secondary')[3]).text().trim();
                 var dateText = jQuery(box.find('div.order-info span.value')[0]).text().trim();
                 var items = [];
@@ -131,12 +129,16 @@
                     item['url'] = 'https://www.amazon.co.jp' + item['path'];
                     item['date'] = dateText;
                     item['author'] = $(pubarr[j * 2]).text().trim().replace(/(\n)/g, '').replace(/ +/g, ' ');
-                    item['price'] = $(this).parent().parent().find("span.a-color-price").text().trim();
                     item['orderno'] = orderNo;
-                    //電子書籍の場合、商品情報のところに金額がでていないので合計金額の部分を取ってくる
+                    item['price'] = $(this).parent().parent().find("span.a-color-price").text().trim();
+                    var orderNo =  jQuery(box.find('div.order-info span.a-color-secondary')[7]).text().trim();  
+                    //var printUrl = 'https://www.amazon.co.jp/gp/css/summary/print.html/ref=oh_aui_pi_o01_?ie=UTF8&orderID=D01-3061368-4425015';
                     if(!item['price']){
                       item['price'] = totalPrice;
+                      orderNo =  jQuery(box.find('div.order-info span.a-color-secondary')[5]).text().trim();
+                      //printUrl = 'https://www.amazon.co.jp/gp/digital/your-account/order-summary.html?ie=UTF8&orderID=D01-6363624-2079436&print=1&ref_=oh_aui_ajax_dpi&';
                     }
+                    item['orderno'] = orderNo;
                     items.push(item);
                 });
                 var priceText = jQuery(box.find('div.order-info span.value')[1]).text();
